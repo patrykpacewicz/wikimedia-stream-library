@@ -1,0 +1,17 @@
+apply plugin: 'java'
+
+sourceCompatibility = 1.7
+targetCompatibility = 1.7
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    compile 'log4j:log4j:1.2.17'
+    compile fileTree(dir: 'libs', include: '*.jar')
+}
+
+task wrapper(type: Wrapper) {
+    gradleVersion = '2.3'
+}

@@ -1,0 +1,27 @@
+# Created by https://www.gitignore.io
+
+### Intellij ###
+*.iml
+.idea/
+
+## File-based project format:
+*.ipr
+*.iws
+
+## Plugin-specific files:
+out/
+.idea_modules/
+
+### Java ###
+*.class
+.mtj.tmp/
+*.jar
+*.war
+*.ear
+!/libs/*.jar
+
+### Gradle ###
+.gradle
+build/
+gradle-app.setting
+!gradle-wrapper.jar
