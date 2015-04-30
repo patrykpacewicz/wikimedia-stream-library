@@ -3,10 +3,10 @@ package pl.patrykpacewicz.wikimedia.stream;
 import io.socket.IOCallback;
 import io.socket.SocketIO;
 import io.socket.SocketIOException;
-import pl.patrykpacewicz.wikimedia.stream.on.EmptyListener;
-import pl.patrykpacewicz.wikimedia.stream.on.Listener;
-import pl.patrykpacewicz.wikimedia.stream.on.Listeners;
-import pl.patrykpacewicz.wikimedia.stream.socket.io.SocketIoWrapper;
+import pl.patrykpacewicz.wikimedia.stream.callback.WikiMediaCallback;
+import pl.patrykpacewicz.wikimedia.stream.listener.EmptyListener;
+import pl.patrykpacewicz.wikimedia.stream.listener.Listener;
+import pl.patrykpacewicz.wikimedia.stream.listener.Listeners;
 
 import java.net.MalformedURLException;
 
@@ -14,12 +14,12 @@ public class WikiMediaStream {
     private final IOCallback ioCallback;
     private final SocketIO socketIO;
 
-    public static Builder builder() { return new Builder(); }
-
     private WikiMediaStream(IOCallback ioCallback, SocketIO socketIO) {
         this.ioCallback = ioCallback;
         this.socketIO = socketIO;
     }
+
+    public static Builder builder() { return new Builder(); }
 
     public IOCallback getIoCallback() {
         return ioCallback;
@@ -33,9 +33,13 @@ public class WikiMediaStream {
         socketIO.connect(ioCallback);
     }
 
-    public static class Builder {
+    public void disconnect() {
+        socketIO.disconnect();
+    }
+
+    private static class Builder {
         private String wikimediaStreamUlr = "http://stream.wikimedia.org/rc";
-        private String wikiToListen = "commons.wikimedia.org";
+        private String subscribeWikiName = "commons.wikimedia.org";
         private EmptyListener onDisconnectListener = Listeners.emptyListener;
         private EmptyListener onConnectListener = Listeners.emptyListener;
         private Listener<Object> onChangeListener = Listeners.objectListener;
@@ -46,8 +50,8 @@ public class WikiMediaStream {
             return this;
         }
 
-        public Builder wikiToListen(String wikiToListen) {
-            this.wikiToListen = wikiToListen;
+        public Builder subscribeWikiName(String subscribeWikiName) {
+            this.subscribeWikiName = subscribeWikiName;
             return this;
         }
 
@@ -73,11 +77,12 @@ public class WikiMediaStream {
 
         public WikiMediaStream build() throws MalformedURLException {
             SocketIO io = new SocketIO(wikimediaStreamUlr);
-            SocketIoWrapper socketIoWrapper = new SocketIoWrapper(
-                    io, wikiToListen, onDisconnectListener, onConnectListener, onChangeListener, onErrorListener
+            WikiMediaCallback wikiMediaCallback = new WikiMediaCallback(
+                    io, subscribeWikiName, onDisconnectListener,
+                    onConnectListener, onChangeListener, onErrorListener
             );
 
-            return new WikiMediaStream(socketIoWrapper, io);
+            return new WikiMediaStream(wikiMediaCallback, io);
         }
     }
 }

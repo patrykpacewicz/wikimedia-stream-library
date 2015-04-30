@@ -1,4 +1,4 @@
-package pl.patrykpacewicz.wikimedia.stream.socket.io;
+package pl.patrykpacewicz.wikimedia.stream.callback;
 
 import io.socket.IOAcknowledge;
 import io.socket.IOCallback;
@@ -6,29 +6,30 @@ import io.socket.SocketIO;
 import io.socket.SocketIOException;
 import org.apache.log4j.Logger;
 import org.json.JSONObject;
-import pl.patrykpacewicz.wikimedia.stream.on.EmptyListener;
-import pl.patrykpacewicz.wikimedia.stream.on.Listener;
+import pl.patrykpacewicz.wikimedia.stream.listener.EmptyListener;
+import pl.patrykpacewicz.wikimedia.stream.listener.Listener;
 
-public class SocketIoWrapper implements IOCallback {
-    private final static Logger logger = Logger.getLogger(SocketIoWrapper.class);
+public class WikiMediaCallback implements IOCallback {
+    private static final Logger LOGGER = Logger.getLogger(WikiMediaCallback.class);
+    private static final String SUPPORTED_EVENT = "change";
 
     private final SocketIO io;
-    private final String wikiName;
+    private final String subscribeWikiName;
     private final EmptyListener onDisconnectListener;
     private final EmptyListener onConnectListener;
     private final Listener<Object> onChangeListener;
     private final Listener<SocketIOException> onErrorListener;
 
-    public SocketIoWrapper(
+    public WikiMediaCallback(
             SocketIO io,
-            String wikiName,
+            String subscribeWikiName,
             EmptyListener onDisconnectListener,
             EmptyListener onConnectListener,
             Listener<Object> onChangeListener,
             Listener<SocketIOException> onErrorListener
     ) {
         this.io = io;
-        this.wikiName = wikiName;
+        this.subscribeWikiName = subscribeWikiName;
         this.onDisconnectListener = onDisconnectListener;
         this.onConnectListener = onConnectListener;
         this.onChangeListener = onChangeListener;
@@ -37,45 +38,44 @@ public class SocketIoWrapper implements IOCallback {
 
     @Override
     public void onDisconnect() {
-        logger.debug("onDisconnect");
+        LOGGER.debug("onDisconnect");
         onDisconnectListener.call();
     }
 
     @Override
     public void onConnect() {
-        logger.debug("onConnect");
-        logger.debug("Subscribing to: " + wikiName);
-        io.emit("subscribe", wikiName);
+        LOGGER.debug("onConnect, subscribing to: " + subscribeWikiName);
+        io.emit("subscribe", subscribeWikiName);
         onConnectListener.call();
     }
 
     @Override
     public void onMessage(String s, IOAcknowledge ioAcknowledge) {
-        logger.warn("onMessage is not supported but was executed with " + s +" message");
+        LOGGER.warn("onMessage is not supported but was executed with " + s + " message");
     }
 
     @Override
     public void onMessage(JSONObject jsonObject, IOAcknowledge ioAcknowledge) {
-        logger.warn("onMessage is not supported but was executed with " + jsonObject.toString() +" message");
+        onMessage(jsonObject.toString(), ioAcknowledge);
     }
 
     @Override
     public void on(String s, IOAcknowledge ioAcknowledge, Object... objects) {
-        if (!s.equalsIgnoreCase("change")) {
-            logger.warn("unsupported message: " + s);
+        if (!s.equalsIgnoreCase(SUPPORTED_EVENT)) {
+            LOGGER.warn("unsupported message: " + s);
             return;
         }
 
-        logger.debug("on "+ s +" was executed with " + objects.length + " messages");
+        LOGGER.debug("on " + s + " was executed with " + objects.length + " messages");
         for (Object object : objects) {
-            logger.debug("message: " + object.toString());
+            LOGGER.debug("message: " + object.toString());
             onChangeListener.call(object);
         }
     }
 
     @Override
     public void onError(SocketIOException e) {
-        logger.error("onError", e);
+        LOGGER.error("onError", e);
         onErrorListener.call(e);
     }
 }

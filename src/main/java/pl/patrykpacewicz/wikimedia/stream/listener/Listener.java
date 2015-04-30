@@ -1,4 +1,4 @@
-package pl.patrykpacewicz.wikimedia.stream.on;
+package pl.patrykpacewicz.wikimedia.stream.listener;
 
 public interface Listener<T> {
     void call(T data);
