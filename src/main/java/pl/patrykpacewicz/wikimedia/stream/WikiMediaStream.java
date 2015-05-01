@@ -37,7 +37,7 @@ public class WikiMediaStream {
         socketIO.disconnect();
     }
 
-    private static class Builder {
+    public static class Builder {
         private String wikimediaStreamUrl = "http://stream.wikimedia.org/rc";
         private String subscribeChannel = "commons.wikimedia.org";
         private EmptyListener onDisconnectListener = Listeners.emptyListener;
