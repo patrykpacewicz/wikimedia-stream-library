@@ -35,11 +35,8 @@ dependencies {
     testCompile 'cglib:cglib-nodep:3.1'
 }
 
-jar {
-    into('libs') { from 'libs' }
-    manifest {
-        attributes 'Class-Path': "libs/socketio.jar"
-    }
+processResources{
+    from( zipTree("libs/socketio.jar") )
 }
 
 task sourceJar(type: Jar) {
