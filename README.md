@@ -2,9 +2,24 @@ wikimedia-stream-library
 ========================
 
 [![Build Status](https://travis-ci.org/patrykpacewicz/wikimedia-stream-library.svg?branch=master)](https://travis-ci.org/patrykpacewicz/wikimedia-stream-library)
+[ ![Download](https://api.bintray.com/packages/patrykpacewicz/maven/wikimedia-stream-library/images/download.svg) ](https://bintray.com/patrykpacewicz/maven/wikimedia-stream-library/_latestVersion)
 
 wikimedia-stream-library is a library getting an edit stream
 of wikimedia based pages (e.g, *en.wikipedia.org*).
+
+Binaries
+--------
+
+Example for Gradle:
+
+```groovy
+repositories {
+    maven { url "https://dl.bintray.com/patrykpacewicz/maven" }
+}
+dependencies {
+    compile 'pl.patrykpacewicz:wikimedia-stream-library:0.1.0'
+}
+```
 
 Implementation details
 ----------------------
