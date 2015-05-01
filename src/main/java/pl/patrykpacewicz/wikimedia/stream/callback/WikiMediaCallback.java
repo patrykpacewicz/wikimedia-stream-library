@@ -14,7 +14,7 @@ public class WikiMediaCallback implements IOCallback {
     private static final String SUPPORTED_EVENT = "change";
 
     private final SocketIO io;
-    private final String subscribeWikiName;
+    private final String subscribeChannel;
     private final EmptyListener onDisconnectListener;
     private final EmptyListener onConnectListener;
     private final Listener<Object> onChangeListener;
@@ -22,14 +22,14 @@ public class WikiMediaCallback implements IOCallback {
 
     public WikiMediaCallback(
             SocketIO io,
-            String subscribeWikiName,
+            String subscribeChannel,
             EmptyListener onDisconnectListener,
             EmptyListener onConnectListener,
             Listener<Object> onChangeListener,
             Listener<SocketIOException> onErrorListener
     ) {
         this.io = io;
-        this.subscribeWikiName = subscribeWikiName;
+        this.subscribeChannel = subscribeChannel;
         this.onDisconnectListener = onDisconnectListener;
         this.onConnectListener = onConnectListener;
         this.onChangeListener = onChangeListener;
@@ -44,8 +44,8 @@ public class WikiMediaCallback implements IOCallback {
 
     @Override
     public void onConnect() {
-        LOGGER.debug("onConnect, subscribing to: " + subscribeWikiName);
-        io.emit("subscribe", subscribeWikiName);
+        LOGGER.debug("onConnect, subscribing to: " + subscribeChannel);
+        io.emit("subscribe", subscribeChannel);
         onConnectListener.call();
     }
 

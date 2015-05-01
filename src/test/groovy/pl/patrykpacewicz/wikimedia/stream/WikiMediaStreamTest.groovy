@@ -17,8 +17,8 @@ class WikiMediaStreamTest extends Specification {
 
         when:
         def wikiMediaStream = WikiMediaStream.builder()
-            .subscribeWikiName(subscribeWikiName)
-            .mikimediaStreamUlr(url)
+            .subscribeChannel(subscribeWikiName)
+            .mikimediaStreamUrl(url)
             .onDisconnect(onDisconnectListener)
             .onConnect(onConnectListener)
             .onChange(onChangeListener)
@@ -28,7 +28,7 @@ class WikiMediaStreamTest extends Specification {
         then:
         wikiMediaStream.socketIO.url == new URL(url)
         wikiMediaStream.ioCallback.io == wikiMediaStream.socketIO
-        wikiMediaStream.ioCallback.subscribeWikiName == subscribeWikiName
+        wikiMediaStream.ioCallback.subscribeChannel == subscribeWikiName
         wikiMediaStream.ioCallback.onDisconnectListener == onDisconnectListener
         wikiMediaStream.ioCallback.onConnectListener == onConnectListener
         wikiMediaStream.ioCallback.onChangeListener == onChangeListener
@@ -42,7 +42,7 @@ class WikiMediaStreamTest extends Specification {
         then:
         wikiMediaStream.socketIO.url == new URL('http://stream.wikimedia.org/rc')
         wikiMediaStream.ioCallback.io == wikiMediaStream.socketIO
-        wikiMediaStream.ioCallback.subscribeWikiName == 'commons.wikimedia.org'
+        wikiMediaStream.ioCallback.subscribeChannel == 'commons.wikimedia.org'
         wikiMediaStream.ioCallback.onDisconnectListener == Listeners.emptyListener
         wikiMediaStream.ioCallback.onConnectListener == Listeners.emptyListener
         wikiMediaStream.ioCallback.onChangeListener == Listeners.objectListener

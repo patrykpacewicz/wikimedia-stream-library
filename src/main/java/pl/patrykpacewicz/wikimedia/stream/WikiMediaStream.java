@@ -38,20 +38,20 @@ public class WikiMediaStream {
     }
 
     private static class Builder {
-        private String wikimediaStreamUlr = "http://stream.wikimedia.org/rc";
-        private String subscribeWikiName = "commons.wikimedia.org";
+        private String wikimediaStreamUrl = "http://stream.wikimedia.org/rc";
+        private String subscribeChannel = "commons.wikimedia.org";
         private EmptyListener onDisconnectListener = Listeners.emptyListener;
         private EmptyListener onConnectListener = Listeners.emptyListener;
         private Listener<Object> onChangeListener = Listeners.objectListener;
         private Listener<SocketIOException> onErrorListener = Listeners.exceptionListener;
 
-        public Builder mikimediaStreamUlr(String wikimediaStreamUlr) {
-            this.wikimediaStreamUlr = wikimediaStreamUlr;
+        public Builder mikimediaStreamUrl(String wikimediaStreamUrl) {
+            this.wikimediaStreamUrl = wikimediaStreamUrl;
             return this;
         }
 
-        public Builder subscribeWikiName(String subscribeWikiName) {
-            this.subscribeWikiName = subscribeWikiName;
+        public Builder subscribeChannel(String subscribeChannel) {
+            this.subscribeChannel = subscribeChannel;
             return this;
         }
 
@@ -76,9 +76,9 @@ public class WikiMediaStream {
         }
 
         public WikiMediaStream build() throws MalformedURLException {
-            SocketIO io = new SocketIO(wikimediaStreamUlr);
+            SocketIO io = new SocketIO(wikimediaStreamUrl);
             WikiMediaCallback wikiMediaCallback = new WikiMediaCallback(
-                    io, subscribeWikiName, onDisconnectListener,
+                    io, subscribeChannel, onDisconnectListener,
                     onConnectListener, onChangeListener, onErrorListener
             );
 
