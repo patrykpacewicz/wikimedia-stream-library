@@ -1,8 +1,26 @@
+buildscript {
+    repositories {
+        jcenter()
+    }
+
+    dependencies {
+        classpath 'pl.allegro.tech.build:axion-release-plugin:1.1.0'
+        classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.1'
+    }
+}
+
 apply plugin: 'java'
 apply plugin: 'groovy'
+apply plugin: 'maven-publish'
+apply plugin: 'com.jfrog.bintray'
+apply plugin: 'pl.allegro.tech.build.axion-release'
 
 sourceCompatibility = 1.7
 targetCompatibility = 1.7
+
+scmVersion { tag { prefix = project.name } }
+project.version = scmVersion.version
+project.group = 'pl.patrykpacewicz'
 
 repositories {
     mavenCentral()
@@ -15,6 +33,30 @@ dependencies {
     testCompile 'org.codehaus.groovy:groovy-all:2.4.3'
     testCompile 'org.spockframework:spock-core:1.0-groovy-2.4'
     testCompile 'cglib:cglib-nodep:3.1'
+}
+
+task sourceJar(type: Jar) {
+    from sourceSets.main.allJava
+}
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            from components.java
+            artifact sourceJar { classifier "sources" }
+        }
+    }
+}
+
+bintray {
+    user = project.properties['bintrayUser']   ? bintrayUser   : ''
+    key  = project.properties['bintrayApiKey'] ? bintrayApiKey : ''
+    publications = ['mavenJava']
+    pkg {
+        name = project.name
+        repo = 'maven'
+        version { name = project.version }
+    }
 }
 
 task wrapper(type: Wrapper) {
